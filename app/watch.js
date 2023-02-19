@@ -25,7 +25,7 @@ export default async function watch() {
         }
 
         const r = Array.from(new Set(block.transactions.filter(v => {
-            return v.input.length > 2
+            return v.input.length > 2 && v.to !== null
         }).map(v => {
             return v.to
         }))).filter(i => {
@@ -43,8 +43,30 @@ export default async function watch() {
             const r = await resp.json()
             if (r.message === 'OK' && r.result[0]?.SourceCode?.length > 0) {
                 const code = r.result[0]
+
+                let codeStr;
                 const address = v;
-                fs.writeFileSync(`${config.path}/${address}`, code.SourceCode, (err) => {
+
+                let sourceCode = code.SourceCode.trimLeft().trimRight();
+
+
+                if (sourceCode.startsWith("{{") && sourceCode.endsWith("}}")) {
+                    sourceCode = sourceCode.substring(1, sourceCode.length - 1)
+                    const obj = JSON.parse(sourceCode);
+                    if (obj?.sources) {
+                        let code = "";
+                        const files = obj?.sources;
+                        for (let key in files) {
+                            code = `${code}\n// File: ${key}\n${files[key]["content"]}\n`;
+                        }
+                        codeStr = code;
+                    }
+                } else {
+                    codeStr = sourceCode;
+                }
+
+
+                fs.writeFileSync(`${config.path}/${address}`, codeStr, (err) => {
                     console.log(err)
                 })
             }
