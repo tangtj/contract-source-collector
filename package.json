@@ -1,0 +1,17 @@
+{
+  "name": "contract-source-collector",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module",
+  "author": "tangtj",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^3.3.0",
+    "pg": "^8.9.0",
+    "web3": "3.0.0-rc.5"
+  }
+}
