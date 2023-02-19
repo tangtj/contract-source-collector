@@ -4,11 +4,5 @@
     "url": "https://api.bscscan.com/api",
     "key": []
   },
-  "db": {
-    "user": "username",
-    "host": "host",
-    "database": "database",
-    "password": "password",
-    "port": 5432
-  }
+  "path":"save path dir",
 }

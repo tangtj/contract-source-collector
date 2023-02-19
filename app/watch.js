@@ -1,13 +1,8 @@
 import Web3 from "web3";
 import fetch from 'node-fetch';
-import crypto from 'crypto';
-import pg from 'pg'
 import {config} from "../config/config.js";
+import fs from "fs";
 
-
-const pool = new pg.Pool({
-    ...config.db, max: 20, connectionTimeoutMillis: 2000,
-})
 export default async function watch() {
 
     const web3 = new Web3(config.rpc);
@@ -29,15 +24,12 @@ export default async function watch() {
             return
         }
 
-        const address = Array.from(new Set(block.transactions.filter(v => {
+        const r = Array.from(new Set(block.transactions.filter(v => {
             return v.input.length > 2
         }).map(v => {
             return v.to
-        })))
-        const result = await pool.query(`select * from (select unnest($1::text[]) as addr) as addrs where addr not in (select address as addr from source)`, [address])
-
-        const r = result.rows?.map((v) => {
-            return v.addr
+        }))).filter(i => {
+            return !fs.existsSync(`${config.path}/${i}`)
         })
 
         for (const v of r) {
@@ -52,10 +44,8 @@ export default async function watch() {
             if (r.message === 'OK' && r.result[0]?.SourceCode?.length > 0) {
                 const code = r.result[0]
                 const address = v;
-                pool.query({
-                    name: "save-contract-code",
-                    text: `insert into source(address,source,md5) values($1,$2,$3) ON CONFLICT DO NOTHING`,
-                    values: [address, code.SourceCode, crypto.createHash('md5').update(code.SourceCode).digest("hex")]
+                fs.writeFileSync(`${config.path}/${address}`, code.SourceCode, (err) => {
+                    console.log(err)
                 })
             }
         }
