@@ -66,8 +66,11 @@ export default async function watch() {
                     codeStr = sourceCode;
                 }
 
-
-                fs.writeFileSync(`${config.path}/${address}`, codeStr, (err) => {
+                const prefix = i.substring(2, 4)
+                if (!fs.existsSync(`${config.path}/${prefix}`)) {
+                    fs.mkdirSync(`${config.path}/${prefix}`)
+                }
+                fs.writeFileSync(`${config.path}/${prefix}/${address}`, codeStr, (err) => {
                     console.log(err)
                 })
             }
