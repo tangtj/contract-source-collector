@@ -66,7 +66,7 @@ export default async function watch() {
                     codeStr = sourceCode;
                 }
 
-                const prefix = i.substring(2, 6).toLowerCase()
+                const prefix = address.substring(2, 6).toLowerCase()
                 if (!fs.existsSync(`${config.path}/${prefix}`)) {
                     fs.mkdirSync(`${config.path}/${prefix}`)
                 }
