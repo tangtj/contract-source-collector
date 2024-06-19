@@ -29,7 +29,8 @@ export default async function watch() {
         }).map(v => {
             return v.to
         }))).filter(i => {
-            return !fs.existsSync(`${config.path}/${i}`)
+            const prefix = i.substring(2, 4)
+            return !fs.existsSync(`${config.path}/${prefix}/${i}`)
         })
 
         for (const v of r) {
