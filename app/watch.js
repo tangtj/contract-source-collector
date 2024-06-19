@@ -29,7 +29,7 @@ export default async function watch() {
         }).map(v => {
             return v.to
         }))).filter(i => {
-            const prefix = i.substring(2, 4)
+            const prefix = i.substring(2, 6).toLowerCase()
             return !fs.existsSync(`${config.path}/${prefix}/${i}`)
         })
 
@@ -66,7 +66,7 @@ export default async function watch() {
                     codeStr = sourceCode;
                 }
 
-                const prefix = i.substring(2, 4)
+                const prefix = i.substring(2, 6).toLowerCase()
                 if (!fs.existsSync(`${config.path}/${prefix}`)) {
                     fs.mkdirSync(`${config.path}/${prefix}`)
                 }
